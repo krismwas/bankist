@@ -80,6 +80,20 @@ const displayMovements = function (movements) {
 
 displayMovements(account1.movements);
 
+// const calcDisplayBalance = function (movements) {
+//   const balance = movements.reduce((acc, el) => acc + el, 0);
+//   labelBalance.textContent = `${balance} eur`;
+// };
+
+const calcDisplayBalance = function (movement) {
+  const balance = movement.reduce(function (accum, el) {
+    return accum + el;
+  }, 0);
+  labelBalance.textContent = `${balance} eur`;
+};
+
+calcDisplayBalance(account1.movements);
+
 const user = 'Steven Thomas Williams';
 
 const createUserNames = function (arr) {
@@ -95,7 +109,7 @@ const createUserNames = function (arr) {
 };
 
 createUserNames(accounts);
-console.log(accounts);
+
 /////////////////////////////////////////////////
 /////////////////////////////////////////////////
 // LECTURES
