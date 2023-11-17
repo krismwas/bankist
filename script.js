@@ -61,9 +61,9 @@ const inputLoanAmount = document.querySelector('.form__input--loan-amount');
 const inputCloseUsername = document.querySelector('.form__input--user');
 const inputClosePin = document.querySelector('.form__input--pin');
 
-const displayMovements = function (movements) {
+const displayMovements = function (acc) {
   containerMovements.innerHTML = '';
-  movements.forEach(function (mov, i) {
+  acc.movements.forEach(function (mov, i) {
     const type = mov > 0 ? 'deposit' : 'withdrawal';
     const html = `
       <div class="movements__row">
@@ -78,41 +78,35 @@ const displayMovements = function (movements) {
   });
 };
 
-displayMovements(account1.movements);
-
 // const calcDisplayBalance = function (movements) {
 //   const balance = movements.reduce((acc, el) => acc + el, 0);
 //   labelBalance.textContent = `${balance} eur`;
 // };
 
-const calcDisplayBalance = function (movement) {
-  const balance = movement.reduce(function (accum, el) {
+const calcDisplayBalance = function (acc) {
+  const balance = acc.movements.reduce(function (accum, el) {
     return accum + el;
   }, 0);
   labelBalance.textContent = `${balance} eur`;
 };
 
-calcDisplayBalance(account1.movements);
-
-const calcDisplaySummary = function (mov) {
-  const deposits = mov
+const calcDisplaySummary = function (acc) {
+  const deposits = acc.movements
     .filter(el => el > 0)
     .reduce((acc, depo) => acc + depo, 0);
   labelSumIn.textContent = deposits;
 
-  const withdrawal = mov
+  const withdrawal = acc.movements
     .filter(wdl => wdl < 0)
     .reduce((acc, el) => Math.abs(acc) + el, 0);
   labelSumOut.textContent = withdrawal;
 
-  const interest = mov
+  const interest = acc.movements
     .filter(el => el > 0)
-    .map(el => el * (1.2 / 100))
+    .map(el => el * (acc.interestRate / 100))
     .reduce((acc, el) => acc + el);
   labelSumInterest.textContent = interest;
 };
-
-calcDisplaySummary(account1.movements);
 
 const user = 'Steven Thomas Williams';
 
@@ -130,6 +124,29 @@ const createUserNames = function (arr) {
 
 createUserNames(accounts);
 
+btnLogin.addEventListener('click', function (e) {
+  e.preventDefault();
+  const acctObj = accounts.find(
+    acct => inputLoginUsername.value === acct.username
+  );
+  if (acctObj?.pin === Number(inputLoginPin.value)) {
+    labelWelcome.textContent = `Welcome back, ${acctObj.owner
+      .split(' ')
+      .at(0)}`;
+    containerApp.style.opacity = 100;
+
+    inputLoginPin.value = inputLoginUsername.value = '';
+
+    // disply movements
+    displayMovements(acctObj);
+
+    // display balance
+    calcDisplayBalance(acctObj);
+
+    // display summary
+    calcDisplaySummary(acctObj);
+  }
+});
 /////////////////////////////////////////////////
 /////////////////////////////////////////////////
 // LECTURES
