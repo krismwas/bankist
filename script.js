@@ -84,10 +84,10 @@ const displayMovements = function (acc) {
 // };
 
 const calcDisplayBalance = function (acc) {
-  const balance = acc.movements.reduce(function (accum, el) {
+  acc.balance = acc.movements.reduce(function (accum, el) {
     return accum + el;
   }, 0);
-  labelBalance.textContent = `${balance} eur`;
+  labelBalance.textContent = `${acc.balance} eur`;
 };
 
 const calcDisplaySummary = function (acc) {
@@ -147,6 +147,19 @@ btnLogin.addEventListener('click', function (e) {
     calcDisplaySummary(acctObj);
   }
 });
+
+btnTransfer.addEventListener('click', function (e) {
+  e.preventDefault();
+  console.log('------------------');
+  const amount = Number(inputTransferAmount.value);
+  const acct = accounts.find(
+    currAccount => currAccount.username === inputTransferTo.value
+  );
+  console.log(acct);
+  if (amount > 0 && amount < ) {
+  }
+});
+
 /////////////////////////////////////////////////
 /////////////////////////////////////////////////
 // LECTURES
