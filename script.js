@@ -70,7 +70,7 @@ const displayMovements = function (movements) {
         <div class="movements__type movements__type--${type}">${
       i + 1
     } ${type}</div>
-        <div class="movements__value">${mov}€</div>
+        <div class="movements__value">${mov}</div>
       </div>
     `;
 
@@ -93,6 +93,26 @@ const calcDisplayBalance = function (movement) {
 };
 
 calcDisplayBalance(account1.movements);
+
+const calcDisplaySummary = function (mov) {
+  const deposits = mov
+    .filter(el => el > 0)
+    .reduce((acc, depo) => acc + depo, 0);
+  labelSumIn.textContent = deposits;
+
+  const withdrawal = mov
+    .filter(wdl => wdl < 0)
+    .reduce((acc, el) => Math.abs(acc) + el, 0);
+  labelSumOut.textContent = withdrawal;
+
+  const interest = mov
+    .filter(el => el > 0)
+    .map(el => el * (1.2 / 100))
+    .reduce((acc, el) => acc + el);
+  labelSumInterest.textContent = interest;
+};
+
+calcDisplaySummary(account1.movements);
 
 const user = 'Steven Thomas Williams';
 
