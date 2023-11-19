@@ -63,7 +63,7 @@ const inputClosePin = document.querySelector('.form__input--pin');
 
 const displayMovements = function (acc) {
   containerMovements.innerHTML = '';
-  console.log(acc);
+  // console.log(acc);
   acc.forEach(function (mov, i) {
     const type = mov > 0 ? 'deposit' : 'withdrawal';
     const html = `
@@ -79,13 +79,8 @@ const displayMovements = function (acc) {
   });
 };
 
-// const calcDisplayBalance = function (movements) {
-//   const balance = movements.reduce((acc, el) => acc + el, 0);
-//   labelBalance.textContent = `${balance} eur`;
-// };
-
 const calcDisplayBalance = function (acc) {
-  acc.balance = acc.reduce(function (accum, el) {
+  acc.balance = acc.movements.reduce(function (accum, el) {
     return accum + el;
   }, 0);
   labelBalance.textContent = `${acc.balance} eur`;
@@ -135,7 +130,7 @@ btnLogin.addEventListener('click', function (e) {
   currentAccount = accounts.find(function (acc) {
     return acc.username === inputLoginUsername.value;
   });
-  console.log(currentAccount);
+  // console.log(currentAccount);
 
   if (currentAccount?.pin === Number(inputLoginPin.value)) {
     console.log('login');
@@ -147,29 +142,43 @@ btnLogin.addEventListener('click', function (e) {
 
     inputLoginUsername.value = inputLoginPin.value = '';
 
-    displayMovements(currentAccount.movements);
-
-    calcDisplayBalance(currentAccount.movements);
-
-    calcDisplaySummary(currentAccount);
+    updateUI(currentAccount);
   }
 
   // console.log(currentAccount);
 });
 
+const updateUI = function (acct) {
+  displayMovements(acct.movements);
+
+  calcDisplayBalance(acct);
+
+  calcDisplaySummary(acct);
+};
+
 btnTransfer.addEventListener('click', function (e) {
   e.preventDefault();
-  console.log('------------------');
+
   const amount = Number(inputTransferAmount.value);
   const receivingAcct = accounts.find(function (acct) {
     return acct.username === inputTransferTo.value;
   });
-  // if (
-  //   amount > 0 &&
-  //   amount <=  &&
-  //   receivingAcct.username !== inputTransferTo.username
-  // ) {
-  // }
+
+  inputTransferAmount.value = inputTransferTo.value = '';
+  if (
+    amount > 0 &&
+    receivingAcct &&
+    currentAccount.balance >= amount &&
+    receivingAcct?.username !== currentAccount.username
+  ) {
+    // money transfer
+    currentAccount.movements.push(-amount);
+    receivingAcct.movements.push(amount);
+
+    console.log('kkkkkkkkkkkkkk');
+
+    updateUI(currentAccount);
+  }
 });
 
 /////////////////////////////////////////////////
