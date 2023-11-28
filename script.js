@@ -228,3 +228,10 @@ const currencies = new Map([
   ['EUR', 'Euro'],
   ['GBP', 'Pound sterling'],
 ]);
+
+labelBalance.addEventListener('click', function () {
+  const rows = [...document.querySelectorAll('.movements__row')];
+  rows.forEach(function (row, i) {
+    if (i % 2 === 0) row.style.backgroundColor = 'grey';
+  });
+});
