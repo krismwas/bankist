@@ -161,17 +161,6 @@ createUserNames(accounts);
 // Event handler
 let currentAccount;
 
-const now = new Date();
-
-const day = `${now.getDay()}`.padStart(2, '0');
-const month = `${now.getMonth() + 1}`.padStart(2, '0');
-
-const year = now.getFullYear();
-const hour = now.getHours();
-const min = now.getMinutes();
-
-labelDate.textContent = `${day}/${month}/${year}, ${hour}:${min}`;
-
 btnLogin.addEventListener('click', function (e) {
   e.preventDefault();
   currentAccount = accounts.find(function (acc) {
@@ -186,6 +175,16 @@ btnLogin.addEventListener('click', function (e) {
       .split(' ')
       .at(0)}`;
     containerApp.style.opacity = 100;
+
+    const now = new Date();
+
+    const day = `${now.getDay()}`.padStart(2, '0');
+    const month = `${now.getMonth() + 1}`.padStart(2, '0');
+
+    const year = now.getFullYear();
+    const hour = now.getHours();
+    const min = now.getMinutes();
+    labelDate.textContent = `${day}/${month}/${year}, ${hour}:${min}`;
 
     inputLoginUsername.value = inputLoginPin.value = '';
 
@@ -222,8 +221,9 @@ btnTransfer.addEventListener('click', function (e) {
     currentAccount.movements.push(-amount);
     receivingAcct.movements.push(amount);
 
-    console.log('kkkkkkkkkkkkkk');
-
+    // add transfer date
+    currentAccount.movementsDates.push(new Date().toDateString());
+    receivingAcct.movementsDates.push(new Date().toISOString());
     updateUI(currentAccount);
   }
 });
@@ -251,6 +251,9 @@ btnLoan.addEventListener('click', function (e) {
     currentAccount.movements.push(amount);
   }
   inputLoanAmount.value = '';
+
+  // add a loan date
+  currentAccount.movementsDates.push(new Date().toISOString());
 
   updateUI(currentAccount);
 });
