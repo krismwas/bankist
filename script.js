@@ -84,7 +84,7 @@ btnSort.addEventListener('click', function (e) {
   sorted = !sorted;
 });
 
-const formatDate = function (date) {
+const formatDate = function (date, locale) {
   const calDaysPassed = (date1, date2) =>
     Math.round(Math.abs(date2 - date1) / (1000 * 60 * 60 * 24));
 
@@ -95,12 +95,12 @@ const formatDate = function (date) {
   if (daysPassed === 0) return 'Today';
   if (daysPassed === 1) return 'Yesterday';
   if (daysPassed <= 7) return `${daysPassed} days ago`;
-  else {
-    const day = `${date.getDate()}`.padStart(2, '0');
-    const month = `${date.getMonth() + 1}`.padStart(2, '0');
-    const year = date.getFullYear();
-    return `${day}/${month}/${year}`;
-  }
+
+  // const day = `${date.getDate()}`.padStart(2, '0');
+  // const month = `${date.getMonth() + 1}`.padStart(2, '0');
+  // const year = date.getFullYear();
+  // return `${day}/${month}/${year}`;
+  return Intl.DateTimeFormat(locale).format(date);
 };
 
 const displayMovements = function (acc, sort = false) {
