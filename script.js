@@ -103,6 +103,14 @@ const formatDate = function (date, locale) {
   return Intl.DateTimeFormat(locale).format(date);
 };
 
+const formatCurr = function (acc, mov) {
+  const formattedMov = new Intl.NumberFormat(acc.locale, {
+    style: 'currency',
+    currency: acc.currency,
+  }).format(mov);
+  return formattedMov;
+};
+
 const displayMovements = function (acc, sort = false) {
   containerMovements.innerHTML = '';
   const movt = sort
@@ -115,10 +123,12 @@ const displayMovements = function (acc, sort = false) {
     const date = new Date(acc.movementsDates[i]);
     const displayDate = formatDate(date);
 
-    const formattedMov = new Intl.NumberFormat(acc.locale, {
-      style: 'currency',
-      currency: acc.currency,
-    }).format(mov);
+    formatCurr(acc, mov);
+
+    // const formattedMov = new Intl.NumberFormat(acc.locale, {
+    //   style: 'currency',
+    //   currency: acc.currency,
+    // }).format(mov);
 
     const html = `
       <div class="movements__row">
@@ -126,7 +136,7 @@ const displayMovements = function (acc, sort = false) {
       i + 1
     } ${type}</div>
       <div class="movements__date">${displayDate}</div>
-        <div class="movements__value">${formattedMov}</div>
+        <div class="movements__value">${formatCurr(acc, mov)}</div>
       </div>
     `;
 
@@ -138,19 +148,24 @@ const calcDisplayBalance = function (acc) {
   acc.balance = acc.movements.reduce(function (accum, el) {
     return accum + el;
   }, 0);
-  labelBalance.textContent = `${acc.balance.toFixed(2)} eur`;
+
+  // formatCurr(acc, acc.balance);
+
+  labelBalance.textContent = formatCurr(acc, acc.balance);
 };
 
 const calcDisplaySummary = function (acc) {
   const deposits = acc.movements
     .filter(el => el > 0)
     .reduce((acc, depo) => acc + depo, 0);
-  labelSumIn.textContent = deposits.toFixed(2);
+  // labelSumIn.textContent = deposits.toFixed(2);
+  labelSumIn.textContent = formatCurr(acc, deposits);
 
   const withdrawal = acc.movements
     .filter(wdl => wdl < 0)
     .reduce((acc, el) => Math.abs(acc) + el, 0);
-  labelSumOut.textContent = withdrawal.toFixed(2);
+  // labelSumOut.textContent = withdrawal.toFixed(2);
+  labelSumOut.textContent = formatCurr(acc, withdrawal);
 
   const interest = acc.movements
     .filter(el => el > 0)
@@ -158,7 +173,8 @@ const calcDisplaySummary = function (acc) {
     .map(el => el * (acc.interestRate / 100))
     .reduce((acc, el) => acc + el, 0);
 
-  labelSumInterest.textContent = interest.toFixed(2);
+  // labelSumInterest.textContent = interest.toFixed(2);
+  labelSumInterest.textContent = formatCurr(acc, interest);
 };
 
 const user = 'Steven Thomas Williams';
