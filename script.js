@@ -193,8 +193,27 @@ const createUserNames = function (arr) {
 
 createUserNames(accounts);
 
+const startLogoutTimer = function () {
+  let time = 30;
+  const tick = function () {
+    let mins = String(Math.trunc(time / 60)).padStart(2, '0');
+    let secs = String(Math.trunc(time % 60)).padStart(2, '0');
+    labelTimer.textContent = `${mins}:${secs}`;
+
+    if (time === 0) {
+      clearInterval(timer);
+      labelWelcome.textContent = `Login to get started`;
+      containerApp.style.opacity = 0;
+    }
+    time--;
+  };
+  tick();
+  const timer = setInterval(tick, 1000);
+  return timer;
+};
+
 // Event handler
-let currentAccount;
+let currentAccount, timer;
 
 btnLogin.addEventListener('click', function (e) {
   e.preventDefault();
@@ -228,6 +247,11 @@ btnLogin.addEventListener('click', function (e) {
     ).format(now);
 
     inputLoginUsername.value = inputLoginPin.value = '';
+
+    // startLogoutTimer();
+
+    if (timer) clearInterval(timer);
+    timer = startLogoutTimer();
 
     updateUI(currentAccount);
   }
@@ -266,6 +290,10 @@ btnTransfer.addEventListener('click', function (e) {
     currentAccount.movementsDates.push(new Date().toDateString());
     receivingAcct.movementsDates.push(new Date().toISOString());
     updateUI(currentAccount);
+
+    // reset timer
+    clearInterval(timer);
+    timer = startLogoutTimer();
   }
 });
 
@@ -297,6 +325,10 @@ btnLoan.addEventListener('click', function (e) {
   currentAccount.movementsDates.push(new Date().toISOString());
 
   updateUI(currentAccount);
+
+  // reset timer
+  clearInterval(timer);
+  timer = startLogoutTimer();
 });
 
 btnSort.addEventListener('click', function () {});
